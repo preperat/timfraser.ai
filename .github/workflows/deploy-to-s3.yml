@@ -11,7 +11,16 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION || vars.AWS_REGION }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET || vars.S3_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID || vars.CLOUDFRONT_DISTRIBUTION_ID }}
     steps:
+      - name: Validate required inputs
+        run: |
+          : "${AWS_REGION:?AWS_REGION is required (set as repo Secret or Variable)}"
+          : "${S3_BUCKET:?S3_BUCKET is required (set as repo Secret or Variable)}"
+          : "${CLOUDFRONT_DISTRIBUTION_ID:?CLOUDFRONT_DISTRIBUTION_ID is required (set as repo Secret or Variable)}"
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -24,14 +33,14 @@ jobs:
 
       - name: Sync public/ to S3
         run: |
-          aws s3 sync public/ s3://${{ secrets.S3_BUCKET }}/ \
+          aws s3 sync public/ s3://${S3_BUCKET}/ \
             --delete \
             --cache-control max-age=300,public
 
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
             --paths '/*'
 
 
