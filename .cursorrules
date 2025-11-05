@@ -1,0 +1,7 @@
+# .cursorrules
+- Enforce version control: changes must reference /docs/infra-runbook.md version tag.
+- Never insert secrets, tokens, or keys.
+- Keep S3 private via CloudFront OAC; no public ACLs.
+- Follow directory layout: public/, .github/workflows/, docs/, scripts/.
+- Prefer PR-based edits on content/* branches; no direct pushes to master.
+- Use ChatGPT only for content/draft generation, not secret handling or deployment keys.

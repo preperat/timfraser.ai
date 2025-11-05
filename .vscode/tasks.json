@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Set AWS env",
+        "type": "shell",
+        "command": "echo env set",
+        "options": { "env": { "AWS_PROFILE": "tef-DevOps", "AWS_REGION": "ap-southeast-2" } },
+        "presentation": { "reveal": "never" }
+      },
+      {
+        "label": "Deploy: sync to S3",
+        "type": "shell",
+        "command": "aws s3 sync public/ s3://${S3_BUCKET}/ --delete --cache-control max-age=300,public",
+        "problemMatcher": []
+      },
+      {
+        "label": "Deploy: invalidate CloudFront",
+        "type": "shell",
+        "command": "aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths /index.html /",
+        "problemMatcher": []
+      }
+    ]
+  }
