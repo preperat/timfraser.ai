@@ -20,7 +20,7 @@
 - Delivery: Use CloudFront + Origin Access Control (OAC) in front of a private S3 bucket. S3 Block Public Access remains ON; no public bucket policy or S3 Website hosting required.
 - Repo layout: Static site lives at the repo root (`public/`, `.github/`, `scripts/`, `docs/`).
 - Credentials: Prefer session env vars and GitHub Actions secrets. Avoid persistent `aws configure` writes.
-- Current status: OAC created, CloudFront distribution provisioned, bucket policy grants CloudFront service read access via `AWS:SourceArn`.
+- Current status: OAC created, CloudFront distribution provisioned, bucket policy grants CloudFront service read access via `AWS:SourceArn`. Workflow invalidates CloudFront after sync.
 
 ---
 
@@ -90,6 +90,7 @@ AWS_ACCESS_KEY_ID = ***
 AWS_SECRET_ACCESS_KEY = ***
 AWS_REGION = ap-southeast-2
 S3_BUCKET = timfraser-ai-site-prod
+CLOUDFRONT_DISTRIBUTION_ID = E1E824G2NW4BJJ
 ```
 
 ### E) Workflow `.github/workflows/deploy-to-s3.yml`
