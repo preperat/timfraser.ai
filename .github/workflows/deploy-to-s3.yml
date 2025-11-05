@@ -16,11 +16,6 @@ jobs:
       S3_BUCKET: ${{ secrets.S3_BUCKET }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
     steps:
-      # Use safe defaults if secrets are missing
-      - name: Resolve config
-        run: |
-          echo "EFFECTIVE_S3_BUCKET=${S3_BUCKET:-timfraser-ai-site-prod}" >> $GITHUB_ENV
-          echo "EFFECTIVE_CF_DIST_ID=${CLOUDFRONT_DISTRIBUTION_ID:-E1E824G2NW4BJJ}" >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -30,6 +25,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Resolve config
+        run: |
+          echo "EFFECTIVE_S3_BUCKET=${S3_BUCKET:-timfraser-ai-site-prod}" >> $GITHUB_ENV
+          echo "EFFECTIVE_CF_DIST_ID=${CLOUDFRONT_DISTRIBUTION_ID:-E1E824G2NW4BJJ}" >> $GITHUB_ENV
 
       - name: Sync public/ to S3
         run: |
@@ -42,5 +42,4 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id "$EFFECTIVE_CF_DIST_ID" \
             --paths '/*'
-
 
