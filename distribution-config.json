@@ -1,0 +1,26 @@
+{
+  "CallerReference": "timfraser-ai-1762327533",
+  "Comment": "timfraser.ai static site",
+  "Enabled": true,
+  "Origins": {
+    "Items": [
+      {
+        "Id": "s3-origin",
+        "DomainName": "timfraser-ai-site-prod.s3.ap-southeast-2.amazonaws.com",
+        "OriginAccessControlId": "E2MTRG27L1QZRJ",
+        "S3OriginConfig": { "OriginAccessIdentity": "" }
+      }
+    ],
+    "Quantity": 1
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "s3-origin",
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": { "Items": ["GET", "HEAD"], "Quantity": 2 },
+    "Compress": true,
+    "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6"
+  },
+  "DefaultRootObject": "index.html",
+  "PriceClass": "PriceClass_200",
+  "ViewerCertificate": { "CloudFrontDefaultCertificate": true }
+}
