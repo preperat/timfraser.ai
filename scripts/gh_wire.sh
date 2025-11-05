@@ -27,6 +27,7 @@ UA_HEADER="User-Agent: gh-wire-script"
 if [ -z "${GITHUB_USER:-}" ]; then
   GITHUB_USER=$(curl -fsS -H "$AUTH_HEADER" -H "$UA_HEADER" "$API/user" | python3 -c 'import sys, json; print(json.load(sys.stdin)["login"])')
 fi
+export GITHUB_USER
 
 REPO_API="$API/repos/${GITHUB_USER}/${REPO_NAME}"
 
