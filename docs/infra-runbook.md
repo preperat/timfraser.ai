@@ -24,62 +24,17 @@
 
 ---
 
-## Build & Deploy — Setup Plan (S3 + GitHub Actions)
+## Build & Deploy — Setup (S3 + GitHub Actions)
 
-### A) CloudShell Environment Setup
+This repo is already wired. Pushing to `master` deploys the `public/` folder to S3 and invalidates CloudFront.
 
-> Open **AWS CloudShell** in **ap-southeast-2 (Sydney)**. Use **session-only** environment variables; do **not** persist config.
+### S3/CloudFront
 
-```bash
-export AWS_REGION=ap-southeast-2
-export AWS_PROFILE=tef-DevOps
-# No aws configure writes; we pass --profile explicitly per command
-```
+- S3 bucket: `timfraser-ai-site-prod` (private; Block Public Access ON)
+- CloudFront distribution: `E1E824G2NW4BJJ` (OAC to S3)
 
-### B) Create S3 Bucket (no public access)
-
-```bash
-aws s3api create-bucket \
-  --bucket timfraser-ai-site-prod \
-  --region "$AWS_REGION" \
-  --create-bucket-configuration LocationConstraint="$AWS_REGION" \
-  --profile "$AWS_PROFILE"
-```
-
-Notes:
-- Keep S3 Block Public Access ON (default). We serve via CloudFront + OAC, not S3 Website.
-- Run `bash scripts/deploy_oac.sh` to create/update the CloudFront distribution and attach the OAC bucket policy.
-
-### C) GitHub Repo & Bootstrap (CloudShell)
-
-Generate SSH key, add to GitHub, then bootstrap the repo:
-
-```bash
-git config --global user.name "Tim Fraser"
-git config --global user.email "you@example.com"
-ssh-keygen -t ed25519 -C "you@example.com" -f ~/.ssh/id_ed25519 -N ""
-cat ~/.ssh/id_ed25519.pub
-```
-
-Add the printed public key to GitHub → **Settings → SSH and GPG keys → New SSH key**.
-
-Then:
-
-```bash
-mkdir timfraser-ai-site && cd timfraser-ai-site
-printf "# timfraser.ai
-" > README.md
-printf "node_modules
-.DS_Store
-.next
-out
-" > .gitignore
-mkdir public && printf "<!doctype html><meta charset=\"utf-8\"><title>timfraser.ai</title><h1>timfraser.ai</h1>" > public/index.html
-
-git init && git checkout -B master
-git remote add origin git@github.com:<your-username>/timfraser-ai-site.git
-git add . && git commit -m "chore: bootstrap" && git push -u origin master
-```
+### GitHub repo
+Branch: `master`. Pushing commits triggers deployment.
 
 ### D) GitHub Actions Secrets
 
@@ -93,14 +48,14 @@ S3_BUCKET = timfraser-ai-site-prod
 CLOUDFRONT_DISTRIBUTION_ID = E1E824G2NW4BJJ
 ```
 
-### E) Workflow `.github/workflows/deploy-to-s3.yml`
+### Workflow `.github/workflows/deploy-to-s3.yml`
 
 ```yaml
 name: Deploy to S3 (static site)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 permissions:
   id-token: write
@@ -109,6 +64,10 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -120,18 +79,28 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Resolve config
+        run: |
+          echo "EFFECTIVE_S3_BUCKET=${S3_BUCKET:-timfraser-ai-site-prod}" >> $GITHUB_ENV
+          echo "EFFECTIVE_CF_DIST_ID=${CLOUDFRONT_DISTRIBUTION_ID:-E1E824G2NW4BJJ}" >> $GITHUB_ENV
+
       - name: Sync public/ to S3
         run: |
-          aws s3 sync public/ s3://${{ secrets.S3_BUCKET }}/ \
+          aws s3 sync public/ s3://${EFFECTIVE_S3_BUCKET}/ \
             --delete \
             --cache-control max-age=300,public
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "$EFFECTIVE_CF_DIST_ID" \
+            --paths '/*'
 ```
 
-### F) Cursor Terminal notes
+### Notes
 
-* Using a dedicated profile (`tef-DevOps`) keeps **recorded commands** consistent in Cursor’s terminal history.
-* Prefer **env vars + `--profile` per command** over persistent `aws configure` writes.
-* If you later use multiple profiles from Cursor, add per-project `.envrc` (direnv) or a `scripts/alias.sh` with `AWS_PROFILE` exports.
+* No public S3 access or website hosting is used; all traffic goes via CloudFront + OAC.
+* Keep credentials in GitHub Actions secrets; `.env` is for local convenience and is gitignored.
 
 ### G) Smoke Test
 
@@ -139,48 +108,10 @@ After pushing to `master`, verify that GitHub Actions runs and that the CloudFro
 
 ---
 
-## Cursor IDE Handover
+## How to deploy
 
-**Goal:** move this deployment workflow into your Cursor IDE environment.
-
-**Steps:**
-
-1. **Create folder** `/Users/tef/Library/CloudStorage/GoogleDrive-admin@addabattery.com.au/Shared drives/Projects/timfraser.ai` and open it in Cursor.
-2. **Connect to GitHub:**
-
-   ```bash
-   git clone git@github.com:<your-username>/timfraser-ai-site.git
-   cd timfraser-ai-site
-   ```
-3. **Ensure AWS credentials** are available in your Cursor terminal session:
-
-   ```bash
-   export AWS_PROFILE=tef-DevOps
-   export AWS_REGION=ap-southeast-2
-   ```
-4. **Run CloudShell CLI equivalents** directly in Cursor’s integrated terminal or through VSCode tasks:
-
-   * Create / verify the S3 bucket
-   * Apply CloudFront + OAC configuration (from earlier runbook)
-   * Push first commit → confirm GitHub Actions triggers deployment
-5. **Verify deployment:** once Actions complete, open the CloudFront domain (or S3 endpoint) to confirm content loads.
-6. **Commit this document** (`Timfraser.md`) to the repo as `/docs/infra-runbook.md` for ongoing reference.
-
-**Notes for Cursor:**
-
-* Cursor automatically tracks command history; commands run here will appear under `AWS_PROFILE=tef-DevOps` context.
-* You can create a `.env` file with:
-
-  ```bash
-  AWS_PROFILE=tef-DevOps
-  AWS_REGION=ap-southeast-2
-  ```
-
-  and Cursor will load it per workspace.
-* When switching between projects, verify the active profile with:
-
-  ```bash
-  aws sts get-caller-identity --profile tef-DevOps
-  ```
+1. Edit files under `public/`.
+2. Commit to `master` and push (token or SSH).
+3. Wait for Actions to complete, then hard-refresh CloudFront: `https://d31bibapqxst6.cloudfront.net`.
 
 
