@@ -76,9 +76,9 @@ out
 " > .gitignore
 mkdir public && printf "<!doctype html><meta charset=\"utf-8\"><title>timfraser.ai</title><h1>timfraser.ai</h1>" > public/index.html
 
-git init && git branch -M main
+git init && git checkout -B master
 git remote add origin git@github.com:<your-username>/timfraser-ai-site.git
-git add . && git commit -m "chore: bootstrap" && git push -u origin main
+git add . && git commit -m "chore: bootstrap" && git push -u origin master
 ```
 
 ### D) GitHub Actions Secrets
@@ -134,7 +134,7 @@ jobs:
 
 ### G) Smoke Test
 
-After pushing to `main`, verify that GitHub Actions runs and that the CloudFront domain (from the console or script output) serves `index.html`.
+After pushing to `master`, verify that GitHub Actions runs and that the CloudFront domain (from the console or script output) serves `index.html`.
 
 ---
 
