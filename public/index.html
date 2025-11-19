@@ -1,19 +1,293 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Built and deployed per docs/infra-runbook.md Version v1.5 — 2025-11-05 (AEST) -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>timfraser.ai</title>
+    <meta name="color-scheme" content="light dark" />
+    <title>Tim Fraser — Fractional CTO & Cloud Transformation Lead | timfraser.cloud</title>
+    <meta name="description" content="Fractional CTO and Cloud & AI Principal. 20+ years leading cloud, data, and digital transformation — available part-time (1–2 days/week). Melbourne-based, hybrid or remote." />
+    <meta property="og:title" content="Fractional CTO & Cloud Transformation Lead — timfraser.cloud" />
+    <meta property="og:description" content="AI-enabled automation, cloud simplification, data maturity uplift, cyber resilience, ERP/eCommerce modernisation, and mentoring. 20+ years experience." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="timfraser.cloud" />
+    <meta name="twitter:card" content="summary" />
     <style>
-      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 40px; }
+      :root {
+        --bg: #0b0c0e;
+        --panel: #111317;
+        --text: #e7ebf0;
+        --muted: #a8b0bb;
+        --accent: #4da3ff;
+        --accent-ink: #0b2540;
+        --ring: rgba(77, 163, 255, 0.4);
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f7f8fb;
+          --panel: #ffffff;
+          --text: #12161c;
+          --muted: #4b5563;
+          --accent: #2563eb;
+          --accent-ink: #ffffff;
+          --ring: rgba(37, 99, 235, 0.25);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: linear-gradient(180deg, var(--bg), var(--panel) 120%);
+        color: var(--text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .container {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        backdrop-filter: saturate(140%) blur(6px);
+        background: color-mix(in srgb, var(--panel) 70%, transparent);
+        border-bottom: 1px solid color-mix(in srgb, var(--muted) 20%, transparent);
+        z-index: 10;
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px;
+      }
+      .brand {
+        display: inline-flex;
+        gap: 10px;
+        align-items: baseline;
+        font-weight: 650;
+        letter-spacing: 0.2px;
+      }
+      .brand small {
+        color: var(--muted);
+        font-weight: 500;
+        letter-spacing: 0;
+      }
+      .nav a.cta {
+        text-decoration: none;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: var(--accent);
+        color: var(--accent-ink);
+        font-weight: 600;
+        border: 1px solid color-mix(in srgb, var(--accent) 35%, black 0%);
+        box-shadow: 0 6px 20px var(--ring);
+      }
+      .nav a.cta:focus,
+      .nav a.cta:hover {
+        transform: translateY(-1px);
+      }
+      main { display: block; }
+      .hero {
+        padding: 64px 24px 32px;
+      }
+      .hero .wrap {
+        display: grid;
+        gap: 20px;
+      }
+      .eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        border: 1px solid color-mix(in srgb, var(--muted) 30%, transparent);
+        border-radius: 999px;
+        padding: 6px 10px;
+      }
+      h1 {
+        margin: 8px 0 0;
+        font-size: clamp(32px, 5vw, 46px);
+        line-height: 1.15;
+      }
+      .subhead {
+        font-size: clamp(16px, 2.6vw, 20px);
+        color: var(--muted);
+        margin: 10px 0 0;
+      }
+      .bullets {
+        display: grid;
+        gap: 8px;
+        margin: 16px 0 4px;
+        padding: 0;
+        list-style: none;
+      }
+      .bullets li {
+        display: grid;
+        grid-template-columns: 22px 1fr;
+        align-items: start;
+        gap: 10px;
+      }
+      .bullets li span.mark {
+        display: inline-grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: color-mix(in srgb, var(--accent) 22%, transparent);
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .cta-row {
+        margin-top: 8px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .button {
+        display: inline-block;
+        text-decoration: none;
+        padding: 14px 18px;
+        border-radius: 12px;
+        background: var(--accent);
+        color: var(--accent-ink);
+        font-weight: 700;
+        border: 1px solid color-mix(in srgb, var(--accent) 28%, black 0%);
+        box-shadow: 0 10px 30px var(--ring);
+        transition: transform 120ms ease, box-shadow 120ms ease;
+      }
+      .button:hover,
+      .button:focus {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 36px var(--ring);
+      }
+      .section {
+        padding: 28px 24px;
+      }
+      .section-heading {
+        font-size: clamp(22px, 3.6vw, 28px);
+        margin: 0 0 16px;
+      }
+      .value-grid {
+        display: grid;
+        gap: 16px;
+      }
+      .card {
+        background: color-mix(in srgb, var(--panel) 96%, transparent);
+        border: 1px solid color-mix(in srgb, var(--muted) 22%, transparent);
+        border-radius: 14px;
+        padding: 18px;
+      }
+      .card h3 {
+        margin: 0 0 6px;
+        font-size: 18px;
+      }
+      .card ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+      .about p {
+        margin: 10px 0;
+        color: var(--muted);
+      }
+      footer {
+        border-top: 1px solid color-mix(in srgb, var(--muted) 20%, transparent);
+        margin-top: 24px;
+      }
+      .footer-line {
+        padding: 20px 24px 40px;
+        color: var(--muted);
+        text-align: center;
+      }
+      @media (min-width: 720px) {
+        .value-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      @media (min-width: 960px) {
+        .hero { padding: 84px 24px 40px; }
+      }
+      /* Reduce motion for users who prefer it */
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .button, .nav a.cta { transition: none; }
+      }
     </style>
   </head>
   <body>
-    <h1>timfraser.ai</h1>
-    <p>Static site scaffold is live.</p>
-    <p id="deploy-note">Deployed via Actions test at 2025-11-05T17:39:57Z</p>
+    <a href="#main" class="visually-hidden">Skip to content</a>
+    <header>
+      <div class="container nav" role="navigation" aria-label="Primary">
+        <div class="brand">timfraser.cloud <small>Fractional CTO</small></div>
+        <a class="cta" href="#contact" aria-label="Book a discovery call">Book a call</a>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero">
+        <div class="container wrap">
+          <span class="eyebrow">Fractional Leadership</span>
+          <h1>Fractional CTO &amp; Cloud Transformation Lead</h1>
+          <p class="subhead">20+ years leading cloud, data, and digital transformation — now available part-time.</p>
+          <ul class="bullets" aria-label="Focus areas">
+            <li><span class="mark">•</span><span>AI-enabled automation &amp; cloud simplification</span></li>
+            <li><span class="mark">•</span><span>Data maturity uplift: governance, architecture, pipelines</span></li>
+            <li><span class="mark">•</span><span>Enterprise cyber resilience</span></li>
+            <li><span class="mark">•</span><span>ERP / eCommerce modernisation</span></li>
+            <li><span class="mark">•</span><span>Coaching &amp; mentoring emerging leaders</span></li>
+            <li><span class="mark">•</span><span>Pragmatic delivery, without the corporate noise</span></li>
+          </ul>
+          <div class="cta-row">
+            <a class="button" href="#contact">Book a 20-Minute Discovery Call</a>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          <h2 class="section-heading">What I Bring</h2>
+          <div class="value-grid">
+            <article class="card">
+              <h3>Strategic Leadership</h3>
+              <ul>
+                <li>Technology roadmap &amp; investment guidance</li>
+                <li>Architecture decisions that reduce long-term cost &amp; complexity</li>
+                <li>Executive-ready communication</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h3>Deep Cloud + AI Expertise</h3>
+              <ul>
+                <li>AWS-native design, optimisation, automation</li>
+                <li>AI/ML integration: LLMs, RAG, real-time data</li>
+                <li>Building secure, scalable foundations</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h3>Team Uplift</h3>
+              <ul>
+                <li>Coaching internal engineers &amp; future technology leaders</li>
+                <li>Improving ways-of-working</li>
+                <li>Building successor capability (so you rely less on me, not more)</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section about" aria-labelledby="about">
+        <div class="container">
+          <h2 id="about" class="section-heading">About Tim Fraser</h2>
+          <p>Tim is a senior technology leader with over 20 years of experience across cloud architecture, DevOps, cyber security, data platforms, and software delivery.</p>
+          <p>He has led major transformations across industries including engineering, maritime, AI/ML, enterprise SaaS, and automation.</p>
+          <p>Tim helps organisations transition from reactive IT to proactive, data-driven decision-making — with a calm, practical approach that removes noise and delivers clarity.</p>
+        </div>
+      </section>
+    </main>
+    <footer id="contact">
+      <div class="container footer-line" role="contentinfo">
+        Based in Melbourne • Available 1–2 days per week • Hybrid or remote
+      </div>
+    </footer>
   </body>
-  </html>
-
-
-<!-- redeploy 1762362051 -->
+</html>
